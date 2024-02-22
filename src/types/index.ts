@@ -1,55 +1,74 @@
-interface ISmallProductCard {
+export interface ISmallProductCard {
   id: string;
   title: string;
   price: number | null;
 }
 
-interface IProductCard extends ISmallProductCard {
+export interface IProductCard extends ISmallProductCard {
   category: string;
   imageUrl: string;
 }
 
-interface IProduct extends IProductCard {
+export interface IProduct extends IProductCard {
 	description: string;	
 }
 
-interface IGallery {
-  items: IProduct[];  
-}
+export type payment = 'outline' | 'upon delivery';
 
-interface IBasket {
-  id: string;
-  total: number;
-  items: IGallery;
-  addProduct(id: string): void;
-  removeProduct(id: string): void;
-  clear(): void;
-} 
-
-type payment = 'outline' | 'upon delivery';
-
-interface IPaymentInfo {
+export interface IPaymentInfo {
   payment: payment;
   email: string;  
 }
 
-interface IContactInfo {
+export interface IContactInfo {
   phone: string;
   address: string;  
 }
 
-interface IOrder extends IBasket, IPaymentInfo, IContactInfo {  
-	pay(): boolean;
+export interface IOrder extends IPaymentInfo, IContactInfo {  
+	id: string;
+  total: number;
+  items: IProduct[];
 }
 
-type PaymentFormErrors = {
+export type PaymentFormErrors = {
   address?: string;
   payment?: string;
 };
 
-type ContactsFormErrors = {
+export type ContactFormErrors = {
   email?: string;
   phone?: string;
 };
 
-interface IOrderFormError extends PaymentFormErrors, ContactsFormErrors {}
+export interface IOrderFormError extends PaymentFormErrors, ContactFormErrors {}
+
+export interface IAppState {
+  
+  getInitialStore(items: IProduct[]):void;
+
+  store: IProduct[];
+  
+  getProductInStore(id: string): IProduct;
+  
+  basket: ISmallProductCard[];
+
+  addProductToBasket (value: ISmallProductCard): void;
+
+  removeProductFromBasket (value: ISmallProductCard): void;
+
+  existsProductInBasket(value: ISmallProductCard): boolean;
+
+  getTotalBasketPrice(): number;
+
+  setPaymentInfo(payment: payment, address: string): void;
+  
+  validatePaymentInfo(): boolean;
+
+  setContactsInfo(email: string, phone: string): void;
+
+  validateContactsInfo(): boolean;
+  
+  pay():void;
+
+}

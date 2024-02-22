@@ -58,11 +58,14 @@ yarn build
 В проекте применен паттерн MVP (Model-View-Presenter), который обеспечивает четкое разделение ответственностей между компонентами приложения и улучшает его поддерживаемость и масштабируемость. Каждый компонент выполняет свою четко определенную роль:
 
 - Модель (Model): Отвечает за работу с данными приложения.
-  Классы и интерфейсы: `ISmallProductCard`, `IProductCard`, `IProduct`, `IGallery`, `IBasket`, `IPayment`, `IContact`, `IOrder`, `IOrderFormError`.
+  Классы и интерфейсы: `ISmallProductCard`, `IProductCard`, `IProduct`, `IPaymentInfo`, `IContactInfo`, `IOrder`, `IOrderFormError`.
 - Представление (View): Отображает данные пользователю и взаимодействует с пользователем.
   Классы и интерфейсы: `ICard`, `IPage`.
-- Представитель (Presenter): Связывает модель и представление, управляя взаимодействием между ними и логикой приложения.
-  Классы: `ApiListResponse`, `ApiPostMethods`, `Api`,`EventEmitter`, `EventName`, `Subscriber`, `EmitterEvent`.
+- Представитель (Presenter): Связывает модель и представление, управляя взаимодействием между ними и логикой приложения. В роли презентера будет выступать код [основного скрипта](/src/index.ts) приложения.
+
+## Архитектура приложения (бизнес логика)
+
+![pocess](web-larek-frontend.process.svg)
 
 ## Архитектура слоя данных
 
@@ -70,9 +73,9 @@ yarn build
 
 ## Базовый код
 
-### Класс `SmallProductCard`
+### Интерфейс `ISmallProductCard`
 
-> Отвечает за хранение основной информации о провукте.
+> Отвечает за хранение основной информации о продукте.
 
 Свойства:
 
@@ -80,74 +83,53 @@ yarn build
 - `title: string` - название товара;
 - `price: number | null` - цена товара.
 
-### Класс `ProductCard`
+### Интерфейс `IProductCard`
 
-> Класс наследуется от класса [`SmallProductCard`](#класс-smallproductcard) и расширяет свийства данного класса.
+> Класс наследуется от интерфейса [`ISmallProductCard`](#интерфейс-ismallproductcard) и расширяет его свойства.
 
 Свойства:
 
-- `id: string` - уникальный идентификатор товара (наследуется от класса [`SmallProductCard`](#класс-smallproductcard));
-- `title: string` - название товара (наследуется от класса [`SmallProductCard`](#класс-smallproductcard));
-- `price: number | null` - цена товара (наследуется от класса [`SmallProductCard`](#класс-smallproductcard));
+- `id: string` - уникальный идентификатор товара (наследуется от интерфейса [`ISmallProductCard`](#интерфейс-ismallproductcard));
+- `title: string` - название товара (наследуется от интерфейса [`ISmallProductCard`](#интерфейс-ismallproductcard));
+- `price: number | null` - цена товара (наследуется от интерфейса [`ISmallProductCard`](#интерфейс-ismallproductcard));
 - `category: string` - категория товара;
 - `imageUrl: string` - ссылка на изображение товара.
 
-### Класс `Product`
+### Интерфейс `IProduct`
 
-> Класс наследуется от класса [`ProductCard`](#класс-productcard) и расширяет свийства данного класса. Отвечает за хранение полной информации о продукте.
+> Интерфейс наследуется от интерфейса [`IProductCard`](#интерфейс-iproduct) и расширяет его свойства. Отвечает за хранение полной информации о продукте.
 
 Свойства:
 
-- `id: string` - уникальный идентификатор товара (наследуется от класса [`SmallProductCard`](#класс-smallproductcard));
-- `title: string` - название товара (наследуется от класса [`SmallProductCard`](#класс-smallproductcard));
-- `price: number | null` - цена товара (наследуется от класса [`SmallProductCard`](#класс-smallproductcard));
-- `category: string` - категория товара (наследуется от класса [`ProductCard`](#класс-productcard));
-- `imageUrl: string` - ссылка на изображение товара (наследуется от класса [`ProductCard`](#класс-productcard));
+- `id: string` - уникальный идентификатор товара (наследуется от интерфейса [`ISmallProductCard`](#интерфейс-ismallproductcard));
+- `title: string` - название товара (наследуется от интерфейса [`ISmallProductCard`](#интерфейс-ismallproductcard));
+- `price: number | null` - цена товара (наследуется от интерфейса [`ISmallProductCard`](#интерфейс-ismallproductcard));
+- `category: string` - категория товара (наследуется от интерфейса [`IProductCard`](#интерфейс-iproductcard));
+- `imageUrl: string` - ссылка на изображение товара (наследуется от интерфейса [`IProductCard`](#интерфейс-iproductcard));
 - `description: string` - описание товара.
 
-### Класс `Gallery`
+### Класс `Product`
 
-> Класс представляет собой коллекцию товаров, представленных экземплярами класс [`Product`](#класс-product).
+> Класс имплементирует интерфейсы [`ISmallProductCard`](#интерфейс-ismallproductcard), [`IProductCard`](#интерфейс-iproductcard) и [`IProduct`](#интерфейс-iproduct). Отвечает за хранение полной информации о продукте.
 
-Свойства:
+### Интерфейс `IOrder`
 
-- `items:`[`Product`](#класс-product)`[]` - коллекция товаров.
-
-### Класс `Basket`
-
-> Отвечает за хранение информации о товаров, выбранных пользователем.
+> Отвечает за оформление заказа. Наследуется от интерфейсов [`IPaymentInfo`](#интерфейс-ipaymentinfo) и [`IContactInfo`](#интерфейс-icontactinfo).
 
 Свойства:
 
 - `id: string` - идентификатор заказа товаров;
 - `total: number` - полная стоимость заказа;
-- `items:`[`Gallery`](#класс-gallery)`[]` - коллекция товаров, включенных в заказ.
-
-Функции:
-
-- `addProduct(id: string): void` - добавление товара в заказ, где `id` уникальный идентификатор товара;
-- `removeProduct(id: string): void` - удаляет товар из заказа, где `id` уникальный идентификатор товара;
-- `clear(): void` - удаляет все товары из заказа.
-
-### Класс `Order`
-
-> Отвечает за оформление заказа. Наследуется от класса [`Basket`](#класс-basket), расширяет его функции и имплементирует интерфейсы [`IPaymentInfo`](#интерфейс-ipaymentinfo) и [`IContactInfo`](#интерфейс-icontactinfo).
-
-Свойства:
-
-- `payment: payment` - способ оплаты заказа, где тип `payment` является ограничением из двух значений: `outline` и `upon delivery`.
+- `items:`[`IProduct`](#интерфейс-iproduct)`[]` - коллекция товаров, включенных в заказ.
+- `payment: payment` - способ оплаты заказа, где тип `payment` является ограничением из двух значений: `outline` и `upon delivery`. Наследуется от интерфейса [`IPaymentInfo`](#интерфейс-ipaymentinfo):
 
    ```typescript
    type payment = 'outline' | 'upon delivery';
    ```
 
-- `email: string` - адрес электронной почты пользователя;
-- `phone: string` - номер телефона пользователя;
-- `address: string` - адрес доставки заказа.
-
-Функции:
-
-- `pay(): void` - подтверждение оплаты заказа.
+- `email: string` - адрес электронной почты пользователя (наследуется от интерфейса [`IPaymentInfo`](#интерфейс-ipaymentinfo));
+- `phone: string` - номер телефона пользователя (наследуется от интерфейса [`IContactInfo`](#интерфейс-icontactinfo));
+- `address: string` - адрес доставки заказа (наследуется от интерфейса [`IContactInfo`](#интерфейс-icontactinfo)).
 
 ### Интерфейс `IPaymentInfo`
 
@@ -155,7 +137,7 @@ yarn build
 
 Свойства:
 
-- `payment: payment` - способ оплаты заказа, где тип payment явзяется ограничением из двух значений: `outline` и `upon delivery`.
+- `payment: payment` - способ оплаты заказа, где тип payment является ограничением из двух значений: `outline` и `upon delivery`.
 
    ```typescript
    type payment = 'outline' | 'upon delivery';
@@ -172,7 +154,11 @@ yarn build
 - `phone: string` - номер телефона пользователя;
 - `address: string` - адрес доставки заказа.
 
-## Класс `EventEmitter`
+### Класс `Order`
+
+> Отвечает за оформление заказа. Имплементирует интерфейсы  [`IPaymentInfo`](#интерфейс-ipaymentinfo), [`IContactInfo`](#интерфейс-icontactinfo) и [`IOrder`](#интерфейс-iorder)
+
+### Класс `EventEmitter`
 
 > Брокер событий — это класс, позволяющий объектам подписываться на определённые типы событий и получать уведомления о них.
 
@@ -185,7 +171,7 @@ yarn build
 - `offAll()` - отписывается от всех событий;
 - `trigger(eventName, context)` - создаёт коллбек-триггер, который генерирует событие при вызове.
 
-## Класс `Api`
+### Класс `Api`
 
 > Класс `API` — класс, который позволяет отправлять запросы к API.
 
@@ -194,3 +180,40 @@ yarn build
 - `getUri(uri: string)` — отправляет GET-запрос к указанному URI;
 - `postUri(uri: string, data: object, method: ApiPostMethods = 'POST')` — отправляет POST-запрос к указанному URI (возможными вариантами могут быть `POST`, `PUT` или `DELETE`);
 - `handleResponse()` - обрабатывает ответ сервера и возвращает объект в формате JSON.
+
+### Интерфейс `IAppState`
+
+> Интерфейс, отвечающий за бизнес-логику.
+
+Свойства:
+
+- `store: IProduct[]` - коллекция продуктов, представленных в ветрине приложения;
+- `basket: ISmallProductCard[]` - коллекция продуктов, помещенных в заказ;
+
+Функции:
+
+- `getInitialStore(items: IProduct[]):void` - заполняет витрину приложения продуктами;
+- `getProductInStore(id: string): IProduct` - получает продукт, размещенный в ветрине приложения, по его индексу;
+- `addProductToBasket (value: ISmallProductCard): void` - добавляет продукт в заказ;
+- `removeProductFromBasket (value: ISmallProductCard): void`- удаляет продукт из заказа;
+- `existsProductInBasket(value: ISmallProductCard): boolean` - проверяет наличие продукта в заказе, используется для изменения надписи кнопки;
+- `getTotalBasketPrice(): number` - получает общую стоимость заказа;
+- `setPaymentInfo(payment: payment, address: string): void` - вносит в заказ способ оплаты и адрес доставки;
+- `validatePaymentInfo(): boolean` - проверяет корректность указания способа оплаты и адреса доставки;
+- `setContactsInfo(email: string, phone: string): void` - вносит в заказ сведения о контакте: адресе электронной почты и номере телефона);
+- `validateContactsInfo(): boolean` - проверяет корректность внесения в заказ адреса электронной почты и номера телефона;
+- `pay():void` - выполняет оплату товара и очищает содержимое заказа.
+
+### Класс `AppData`
+
+> Класс имплементирует интерфейс [`IAppState`](#интерфейс-iappstate) и отвечает за бизнес-логику приложения.
+
+События:
+
+- `store:changed` - вызывается при инициализации витрины продуктов;
+- `basket:changed` - вызывается при изменении содержимого корзины;
+- `payment:ready` - вызывается при реализации проверки корректности заполнения информации об оплате;
+- `paymentFormErrors:change` - вызывается по результату проверки корректности заполнения информации об оплате;
+- `contacts:ready` - вызывается при реализации проверки корректности заполнения контактных данных;
+- `contactFormErrors:change` - вызывается по результату проверки коеектности заполнения контактных данных;
+- `order:pay` - вызывается по результату оплаты товара.
