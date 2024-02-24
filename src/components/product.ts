@@ -1,11 +1,11 @@
 import { IProduct } from '../types';
-import { objectModel } from './base/model';
+import { Model } from './base/Model';
 
-export class Product extends objectModel<IProduct> {
-  id: string;
-  description: string;
-  imageUrl: string;
-  title: string;
-  category: string;
-  price: number | null;
+export class Product1 extends Model<IProduct> {
+	id: string;
+	description: string;
+	image: string;
+	title: string;
+	category: string;
+	price: number | null;
 }

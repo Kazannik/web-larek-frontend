@@ -1,74 +1,108 @@
-export interface ISmallProductCard {
-  id: string;
-  title: string;
-  price: number | null;
+export interface IPage {
+	counter: number;
+	catalogue: HTMLElement[];
+	locked: boolean;
 }
 
-export interface IProductCard extends ISmallProductCard {
-  category: string;
-  imageUrl: string;
+export interface IModal {
+	content: HTMLElement;
+}
+
+export interface IForm {
+	valid: boolean;
+	errors: string[];
+}
+
+export interface IBasket {
+	items: HTMLElement[];
+	total: number;
+	button: string[];
+}
+
+export interface IProductNote {
+	id: string;
+	title: string;
+	price: number | null;
+}
+
+export interface IProductCard extends IProductNote {
+	category: string;
+	image: string;
 }
 
 export interface IProduct extends IProductCard {
-	description: string;	
+	description: string;
 }
 
-export type payment = 'outline' | 'upon delivery';
-
+export type payment = 'online' | 'offline';
 export interface IPaymentInfo {
-  payment: payment;
-  email: string;  
+	payment: payment;
+	address: string;
 }
 
-export interface IContactInfo {
-  phone: string;
-  address: string;  
+export interface IContactsInfo {
+	email: string;
+	phone: string;
 }
 
-export interface IOrder extends IPaymentInfo, IContactInfo {  
+export interface IOrder extends IPaymentInfo, IContactsInfo {
 	id: string;
+	total: number;
+	notes: IProductNote[];
+  items: string[];
+}
+
+export interface IOrderResult { 
+  id: string;
   total: number;
-  items: IProduct[];
 }
 
 export type PaymentFormErrors = {
-  address?: string;
-  payment?: string;
+	address?: string;
+	payment?: string;
 };
 
-export type ContactFormErrors = {
-  email?: string;
-  phone?: string;
+export type ContactsFormErrors = {
+	email?: string;
+	phone?: string;
 };
 
-export interface IOrderFormError extends PaymentFormErrors, ContactFormErrors {}
+export interface IOrderFormError
+	extends PaymentFormErrors,
+		ContactsFormErrors {}
+
+export interface IActions {
+	onClick: (event: MouseEvent) => void;
+}
+
+export interface ISuccess {
+	price: number;
+}
 
 export interface IAppState {
-  
-  getInitialStore(items: IProduct[]):void;
+	setInitialStore(items: IProduct[]): void;
 
-  store: IProduct[];
-  
-  getProductInStore(id: string): IProduct;
-  
-  basket: ISmallProductCard[];
+	setProduct(item: IProductCard): void;
 
-  addProductToBasket (value: ISmallProductCard): void;
+	getProduct(): IProduct | null;
 
-  removeProductFromBasket (value: ISmallProductCard): void;
+	addProductToBasket(value: IProductNote): void;
 
-  existsProductInBasket(value: ISmallProductCard): boolean;
+	removeProductFromBasket(value: IProductNote): void;
 
-  getTotalBasketPrice(): number;
+	existsProductInBasket(value: IProductNote): boolean;
 
-  setPaymentInfo(payment: payment, address: string): void;
-  
-  validatePaymentInfo(): boolean;
+	getTotalBasketPrice(): number;
 
-  setContactsInfo(email: string, phone: string): void;
+	setOrderInfoField(field: keyof IOrderFormError, value: string): void;
 
-  validateContactsInfo(): boolean;
-  
-  pay():void;
+	setPaymentInfo(payment: payment, address: string): void;
 
+	validatePaymentInfo(): boolean;
+
+	setContactsInfo(email: string, phone: string): void;
+
+	validateContactsInfo(): boolean;
+
+	pay(): void;
 }
