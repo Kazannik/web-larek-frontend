@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-02-24T20:13:52.549Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 YaBrowser/24.1.0.0 Safari/537.36" etag="KeTt857GP8UkXWsrYj8g" version="23.1.5" type="github">
+<mxfile host="app.diagrams.net" modified="2024-02-24T20:15:10.705Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 YaBrowser/24.1.0.0 Safari/537.36" etag="RU1h1hG9dn6MU1VmslJx" version="23.1.5" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1026" dy="696" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -50,11 +50,13 @@
             <mxPoint x="560" y="130" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0IrBxu6wTO3JT6gGlN2D-45" value="Закрыть окно" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;endArrow=none;endFill=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="0IrBxu6wTO3JT6gGlN2D-15" target="0IrBxu6wTO3JT6gGlN2D-32">
-          <mxGeometry x="0.8788" y="-40" relative="1" as="geometry">
+        <mxCell id="0IrBxu6wTO3JT6gGlN2D-45" value="Закрыть окно" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;startFill=0;endArrow=none;endFill=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="0.908" y="-40" relative="1" as="geometry">
+            <mxPoint x="560" y="25" as="sourcePoint" />
+            <mxPoint x="710" y="270" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="730" y="75" />
-              <mxPoint x="730" y="275" />
+              <mxPoint x="730" y="25" />
+              <mxPoint x="730" y="270" />
             </Array>
             <mxPoint x="40" y="40" as="offset" />
           </mxGeometry>
