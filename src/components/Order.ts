@@ -2,7 +2,7 @@ import { IActions, IBasket } from '../types';
 import { TXT_BASKET_IS_EMPTY, TXT_CURRENCY } from '../utils/constants';
 import { createElement, ensureElement } from '../utils/utils';
 import { Card } from './Card';
-import { Component } from './base/Component';
+import { Component } from './base/component';
 import { EventEmitter } from './base/events';
 
 export class Order extends Component<IBasket> {

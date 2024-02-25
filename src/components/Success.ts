@@ -1,7 +1,7 @@
 import { IActions, ISuccess } from "../types";
 import { TXT_ACTION, TXT_CURRENCY } from "../utils/constants";
 import { ensureElement } from "../utils/utils";
-import { Component } from "./base/Component";
+import { Component } from "./base/component";
 
 export class Success extends Component<ISuccess> {
   protected _close: HTMLElement;

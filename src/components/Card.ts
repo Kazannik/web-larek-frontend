@@ -8,7 +8,8 @@ import {
 	categories,
 } from '../utils/constants';
 import { bem, ensureElement } from '../utils/utils';
-import { Component } from './base/Component';
+import { Component } from './base/component';
+
 
 export class Card<T extends IProduct | {}> extends Component<T | IProduct> {
 	protected _description?: HTMLElement;
