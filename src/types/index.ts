@@ -77,6 +77,7 @@ export interface IActions {
 
 export interface ISuccess {
 	price: number;
+	errorMessage: string;
 }
 
 export interface IAppState {

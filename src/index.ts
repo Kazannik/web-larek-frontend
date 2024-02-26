@@ -215,15 +215,17 @@ events.on(
 	}
 );
 
-events.on('orderPaymentInfo:change', (errors: Partial<IPaymentInfo>) => {
+events.on('paymentFormErrors:change', (errors: Partial<IPaymentInfo>) => {
 	const { payment, address } = errors;
+	orderPayment.valid = !payment || !address;
 	orderPayment.errors = Object.values({ payment, address })
 		.filter((i) => !!i)
 		.join('; ');
 });
 
-events.on('orderContactsInfo:change', (errors: Partial<IContactsInfo>) => {
+events.on('contactsFormErrors:change', (errors: Partial<IContactsInfo>) => {
 	const { email, phone } = errors;
+	orderContacts.valid = !email || !phone;
 	orderContacts.errors = Object.values({ phone, email })
 		.filter((i) => !!i)
 		.join('; ');
@@ -239,7 +241,10 @@ events.on('order:pay', (value: IOrder) => {
 		.then((order) => {
 			events.emit('success:render', order);
 		})
-		.catch();
+		.catch((err) => {
+			console.error(err);
+			events.emit('success:error', err);
+		});
 });
 
 events.on('success:render', (value: IOrderResult) => {
@@ -248,9 +253,24 @@ events.on('success:render', (value: IOrderResult) => {
 			modal.close();
 		},
 	});
+	console.log(value);
 	modal.render({
 		content: success.render({
-			price: value.total,
+			price: value !== undefined ? value.total : 0,
+		}),
+	});
+});
+
+events.on('success:error', (value) => {
+	const success = new Success(cloneTemplate(successTemplate), {
+		onClick: () => {
+			modal.close();
+		},
+	});
+	console.log(value);
+	modal.render({
+		content: success.render({
+			errorMessage: value as unknown as string,
 		}),
 	});
 });

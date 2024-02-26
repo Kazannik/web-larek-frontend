@@ -8,6 +8,7 @@ export const TXT_REJECT = 'Убрать';
 export const TXT_TO_BASKET = 'В корзину';
 export const TXT_BASKET_IS_EMPTY = 'Ваша корзина пуста';
 export const TXT_ACTION =  'Списано';
+export const TXT_ERROR_ORDER =  'Извините, заказ отклонен по следующей причине:';
 
 export const settings = {
   cardCatalogTemplate: 'card-catalog',
