@@ -14,28 +14,24 @@ import { IEvents } from './base/events';
 export class AppData implements IAppState {
 	protected event: IEvents;
 	protected product: IProduct | null;
+	protected store: IProduct[] = [];
+	order: IOrder = this.initialOrder();
 
 	constructor(event: IEvents) {
 		this.event = event;
 	}
-
-	order: IOrder = {
-		notes: [],
-		payment: null,
-		total: null,
-		address: '',
-		email: '',
-		phone: '',
-		id: '',
-    items:[]
-	};
 
 	paymentFormErrors: PaymentFormErrors = {};
 
 	contactsFormErrors: ContactsFormErrors = {};
 
 	setInitialStore(store: IProduct[]): void {
-		this.event.emit('store:changed', store);
+		this.store = store;
+		this.event.emit('store:render', this.store);
+	}
+
+	storeCatalog(): IProduct[] {
+		return this.store;
 	}
 
 	setProduct(item: IProduct) {
@@ -47,32 +43,31 @@ export class AppData implements IAppState {
 		return this.product;
 	}
 
+	initialOrder(): IOrder {
+		return {
+			notes: [],
+			payment: null,
+			total: null,
+			address: '',
+			email: '',
+			phone: '',
+			id: '',
+			items: [],
+		};
+	}
+
 	addProductToBasket(value: IProductNote): void {
 		this.order.notes.push(value);
-		this.calculateTotal(value);
+		this.event.emit('store:render', this.store);
 	}
 
 	removeProductFromBasket(value: IProductNote): void {
 		this.order.notes = this.order.notes.filter((note) => note.id !== value.id);
-		this.calculateTotal(value);
-	}
-
-	calculateTotal(value: IProductNote): void {
-		this.order.total = this.order.notes.reduce(
-			(a, c) => a + this.order.notes.find((it) => it.id === c.id).price,
-			0
-		);
-    this.order.items = this.order.notes.map(x => x.id);
-		this.event.emit('basket:changed', {
-			basket: this.order.notes,
-			item: value,
-		});
+		this.event.emit('store:render', this.store);
 	}
 
 	existsProductInBasket(value: IProductNote): boolean {
-		return (
-			undefined !== this.order.notes.find((element) => element.id === value.id)
-		);
+		return this.order.notes.some((x) => x.id === value.id);
 	}
 
 	getTotalBasketPrice(): number {
@@ -81,7 +76,7 @@ export class AppData implements IAppState {
 
 	setOrderInfoField(field: keyof IOrderFormError, value: string) {
 		if (field === 'payment') {
-			this.order.payment =  value === 'online' ? 'online' : 'offline';
+			this.order.payment = value === 'online' ? 'online' : 'offline';
 		}
 		if (field === 'address') {
 			this.order.address = value;
@@ -139,17 +134,14 @@ export class AppData implements IAppState {
 	}
 
 	pay(): void {
-		this.event.emit('order:pay', this.order );
-		this.order = {
-			notes: [],
-			payment: null,
-			total: null,
-			address: '',
-			email: '',
-			phone: '',
-			id: '',
-      items:[],
-		};
-		this.event.emit('basket:changed', this.order.notes);
+		this.order.total = this.getTotalBasketPrice();
+		this.order.items = this.order.notes.map(x => x.id);
+		this.event.emit('order:pay', this.order);
+		this.clearOrder();
+	}
+
+	clearOrder(): void {
+		this.order = this.initialOrder();
+		this.event.emit('store:render', this.store);
 	}
 }

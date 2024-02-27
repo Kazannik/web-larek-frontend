@@ -24,7 +24,6 @@ export class Form<T> extends Component<IForm> {
 			e.preventDefault();
 			this.events.emit(`${this.container.name}:submit`);	
 			this.setHidden(this.container);
-			this.container.reset();
 		});
 	}
 

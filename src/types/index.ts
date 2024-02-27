@@ -87,6 +87,8 @@ export interface IAppState {
 
 	getProduct(): IProduct | null;
 
+	initialOrder(): IOrder;
+
 	addProductToBasket(value: IProductNote): void;
 
 	removeProductFromBasket(value: IProductNote): void;
@@ -106,4 +108,7 @@ export interface IAppState {
 	validateContactsInfo(): boolean;
 
 	pay(): void;
+
+	clearOrder(): void;
+
 }

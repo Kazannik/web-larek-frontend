@@ -46,9 +46,9 @@ const successTemplate = ensureElement<HTMLTemplateElement>(
 	`#${settings.successTemplate}`
 );
 
-const api = new ProductAPI(CDN_URL, API_URL);
 const events = new EventEmitter();
 const appData = new AppData(events);
+const api = new ProductAPI(CDN_URL, API_URL);
 const page = new Page(document.body, events);
 
 const modal = new Modal(
@@ -63,7 +63,7 @@ const orderContacts = new OrderContactInfo(
 	events
 );
 
-events.on('store:changed', (store: IProduct[]) => {
+events.on('store:render', (store: IProduct[]) => {
 	page.catalogue = store.map((item) => {
 		const card = new Card(`card`, cloneTemplate(cardCatalogTemplate), {
 			onClick: () => {
@@ -78,6 +78,7 @@ events.on('store:changed', (store: IProduct[]) => {
 			category: item.category,
 		});
 	});
+	page.counter = appData.order.notes.length;
 });
 
 events.on('card:click', (item: IProduct) => {
@@ -109,15 +110,7 @@ events.on('card:render', (item: IProduct) => {
 	};
 
 	if (item) {
-		api
-			.getProductItem(item.id)
-			.then((result) => {
-				item.description = result.description;
-				showItem(item);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
+		showItem(item);
 	} else {
 		modal.close();
 	}
@@ -132,13 +125,6 @@ events.on('basket:remove', (value: IProductNote) => {
 	appData.removeProductFromBasket(value);
 	modal.close();
 });
-
-events.on(
-	'basket:changed',
-	(value: { basket: IProductNote[]; item: IProductNote }) => {
-		page.counter = value.basket !== undefined ? value.basket.length : 0;
-	}
-);
 
 events.on('modal:open', () => {
 	page.locked = true;
@@ -166,7 +152,7 @@ events.on('basket:render', () => {
 						index: i + 1,
 					});
 				}),
-				total: appData.order.total,
+				total: appData.getTotalBasketPrice(),
 			}),
 		]),
 	});
@@ -181,7 +167,12 @@ events.on('orderPaymentInfo:render', () => {
 			errors: [],
 		}),
 	});
-	orderPayment.reset();
+	appData.setOrderInfoField(
+		'payment',
+		orderPayment.getPayment() === 'online' ? 'online' : 'offline'
+	);
+	appData.setOrderInfoField('address', orderPayment.getAddress());
+	orderPayment.valid = appData.validatePaymentInfo();
 });
 
 events.on(
@@ -205,6 +196,9 @@ events.on('orderContact:render', () => {
 			errors: [],
 		}),
 	});
+	appData.setOrderInfoField('email', orderContacts.getEmail());
+	appData.setOrderInfoField('phone', orderContacts.getPhone());
+	orderContacts.valid = appData.validateContactsInfo();
 });
 
 events.on(
@@ -253,7 +247,6 @@ events.on('success:render', (value: IOrderResult) => {
 			modal.close();
 		},
 	});
-	console.log(value);
 	modal.render({
 		content: success.render({
 			price: value !== undefined ? value.total : 0,
@@ -267,7 +260,6 @@ events.on('success:error', (value) => {
 			modal.close();
 		},
 	});
-	console.log(value);
 	modal.render({
 		content: success.render({
 			errorMessage: value as unknown as string,

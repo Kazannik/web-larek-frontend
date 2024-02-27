@@ -1,15 +1,17 @@
-import { IPaymentInfo } from '../types';
+import { IPaymentInfo, payment } from '../types';
 import { Form } from './Form';
 import { IEvents } from './base/events';
 
 export class OrderPaymentInfo extends Form<IPaymentInfo> {
 	protected selectorOn?: HTMLElement;
 	protected selectorOff?: HTMLElement;
+	protected _address: HTMLInputElement;
 
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
 		this.selectorOn = this.container.querySelector('[name="card"]');
 		this.selectorOff = this.container.querySelector('[name="cash"]');
+		this._address = this.container.querySelector('[name="address"]');
 
 		this.selectorOn.addEventListener('click', (e: Event) => {
 			e.preventDefault();
@@ -38,8 +40,15 @@ export class OrderPaymentInfo extends Form<IPaymentInfo> {
 		});
 	}
 
-	reset(): void {
-		this.selectorOn.classList.remove('button_alt-active');
-		this.selectorOff.classList.remove('button_alt-active');
+	getPayment(): payment {
+		if (this.selectorOn.classList.contains('button_alt-active')) {
+			return 'online';
+		} else {
+			return 'offline';
+		}
+	}
+
+	getAddress(): string {
+		return this._address.value;
 	}
 }
