@@ -78,6 +78,10 @@ events.on('store:render', (store: IProduct[]) => {
 			category: item.category,
 		});
 	});
+	events.emit('basketCounter:render');
+});
+
+events.on('basketCounter:render',() => {
 	page.counter = appData.order.notes.length;
 });
 

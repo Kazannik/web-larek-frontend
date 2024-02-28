@@ -58,12 +58,12 @@ export class AppData implements IAppState {
 
 	addProductToBasket(value: IProductNote): void {
 		this.order.notes.push(value);
-		this.event.emit('store:render', this.store);
+		this.event.emit('basketCounter:render');
 	}
 
 	removeProductFromBasket(value: IProductNote): void {
 		this.order.notes = this.order.notes.filter((note) => note.id !== value.id);
-		this.event.emit('store:render', this.store);
+		this.event.emit('basketCounter:render');
 	}
 
 	existsProductInBasket(value: IProductNote): boolean {
