@@ -81,7 +81,7 @@ events.on('store:render', (store: IProduct[]) => {
 	events.emit('basketCounter:render');
 });
 
-events.on('basketCounter:render',() => {
+events.on('basketCounter:render', () => {
 	page.counter = appData.order.notes.length;
 });
 

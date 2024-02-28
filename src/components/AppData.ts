@@ -135,7 +135,7 @@ export class AppData implements IAppState {
 
 	pay(): void {
 		this.order.total = this.getTotalBasketPrice();
-		this.order.items = this.order.notes.map(x => x.id);
+		this.order.items = this.order.notes.map((x) => x.id);
 		this.event.emit('order:pay', this.order);
 		this.clearOrder();
 	}
